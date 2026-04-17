@@ -1,0 +1,590 @@
+这是我一个深度思考给出的回答，需要你进行详细分析，尤其是其中的全部公式，其中每个公式、每个参数都需要你进行解释，帮助我理解。
+你这个纠偏是对的。对你现在这组结果，最合适的不是“再造一套完整相场”，而是做一个**最小解释模型**：只保留“转变应变、阈值/解锁、极化投影、事件统计”四件事。这样既能站住脚，又能直接从现有 MD 曲线里算参数、出图、写结果。下面我按这个目标重构。
+
+为避免压缩应力是负号带来的混乱，下面统一把压缩量写成正值：
+[
+s=|\sigma|,\qquad e=|\varepsilon|.
+]
+这样所有式子都能直接拿去拟合。
+
+## 1. 我建议你真正使用的核心式子，只有 4 条
+
+### 1.1 机械主方程：把应变分成“弹性 + 转变”两部分
+
+最核心的一条就是
+[
+e=e^{el}+e^{tr},\qquad s=C_{\rm eff}e^{el}.
+]
+于是得到
+[
+\boxed{s(e)=C_{\rm eff}\big[e-e^{tr}(e)\big]} \tag{1}
+]
+
+对 90° 变体切换，若只保留一个“已切换分数” (f\in[0,1])，转变应变可以写成
+[
+\boxed{e^{tr}(e)=\Delta e_s, f(e)} \tag{2}
+]
+所以
+[
+\boxed{s(e)=C_{\rm eff}\big[e-\Delta e_s f(e)\big]} \tag{3}
+]
+
+这套写法不是凭空捏出来的，而是 Hlinka 和 Márton 的 90° 畴壁 LGD 框架在一维、两变体、单轴压缩下的最小降维版本。原文关键点有两条：
+第一，机械-电耦合进入不完全 Gibbs 自由能的原式是
+[
+g(T,\sigma,E;e,P)=f_L^{(e)}+f_C+f_q-\sigma:e-E\cdot P,
+]
+第二，stress-free spontaneous strain 原式是
+[
+e_1=Q_{11}P_1^2+Q_{12}(P_2^2+P_3^2),\quad
+e_2=Q_{12}P_1^2+Q_{11}P_2^2+Q_{12}P_3^2,
+]
+[
+e_3=Q_{12}P_1^2+Q_{12}P_2^2+Q_{11}P_3^2,
+]
+以及
+[
+e_4=Q_{44}P_2P_3,\quad e_5=Q_{44}P_3P_1,\quad e_6=Q_{44}P_1P_2.
+]
+也就是说，应力本来就是通过“弹性应变 vs 自发/转变应变”的差来起作用；你现在只是把完整张量关系压缩成了沿加载轴的一个有效量 (e^{tr})。这一步在理论上是干净的。
+
+这条式子最有用的地方在于，它可以直接反解出你数据里的“转变应变”：
+[
+\boxed{e^{tr}(e)=e-\frac{s(e)}{C_{\rm eff}}} \tag{4}
+]
+再进一步，如果初态 (f=0)，终态近似 (f=1)，那么
+[
+\boxed{f(e)=\frac{e^{tr}(e)-e^{tr}_0}{\Delta e_s}} \tag{5}
+]
+其中 (e^{tr}_0) 是初始偏置，通常取 0 或直接用第一帧的 (e^{tr})。这意味着：**你只靠应力-应变曲线就能重建“切换分数”**，不需要先上复杂相场。这个重建是你整套最小模型的骨架。
+
+---
+
+### 1.2 模量方程：把“拐点/软化”直接变成一个可计算量
+
+对式 (3) 求导：
+[
+\boxed{
+E_t(e)\equiv \frac{ds}{de}
+==========================
+
+C_{\rm eff}\left(1-\Delta e_s\frac{df}{de}\right)
+} \tag{6}
+]
+
+于是
+[
+\boxed{
+\frac{df}{de}
+=============
+
+\frac{1-E_t/C_{\rm eff}}{\Delta e_s}
+} \tag{7}
+]
+
+这条式子特别适合你，因为你现在已经观察到：
+
+* Twin：应力曲线一直有 serration；
+* Single：前期平滑，后面才出现明显拐点。
+
+在这个公式下，解释非常直接：
+
+* 若前期 (df/de\approx 0)，则 (E_t\approx C_{\rm eff})，表现为几乎纯弹性；
+* 一旦切换开始，(df/de>0)，则 (E_t<C_{\rm eff})，表现为软化或模量拐点；
+* Twin 的 (df/de) 在整个过程中都不为零，而且是很多小突发，所以 (E_t) 会持续起伏；
+* Single 的 (df/de) 长时间接近零，直到某个阈值后突然变大，所以前期平滑、后期拐点非常自然。
+
+这条式子不是文献原式，但它是式 (3) 的直接推导，和 Hlinka 的机械-电耦合完全一致；优点是它能把“曲线看起来像什么”转成“切换速率 (df/de)”这个定量量。
+
+---
+
+### 1.3 极化主方程：先算“纯变体贡献”，再把上冲当残差
+
+如果你画的是某个固定方向的极化分量 (P_\parallel)，那么最简单的 bulk 公式是
+[
+\boxed{
+P_\parallel^{\rm bulk}(e)
+=========================
+
+P_s\big[(1-f)\cos\theta_i+f\cos\theta_f\big]
+} \tag{8}
+]
+
+对最常见的 90° 情形，若初始变体沿观测方向，最终变体与观测方向垂直，则
+[
+\cos\theta_i=1,\qquad \cos\theta_f=0,
+]
+所以直接得到
+[
+\boxed{
+P_\parallel^{\rm bulk}(e)=P_0(1-f(e))
+} \tag{9}
+]
+
+然后定义残差
+[
+\boxed{
+P_{\rm res}(e)=P_\parallel^{\rm obs}(e)-P_\parallel^{\rm bulk}(e)
+} \tag{10}
+]
+
+这一步是你现在最该做的分析。因为它能把问题一下分成两半：
+
+* 若 Twin 满足 (P_{\rm res}\approx 0)，说明 Twin 的极化变化基本就是“变体分数变化”；
+* 若 Single 的上冲对应 (P_{\rm res}>0) 且在 yield 附近出现峰值，说明 hump 不是单靠 bulk 变体切换就能解释，必须有额外的“局部旋转 / wall-junction 极性 / 去抵消”贡献。
+
+“额外贡献”这件事并不是拍脑袋。Paul 等对 BaTiO(_3) 的 MD 表明，切换可以经过 intermediate monoclinic phases 的 polarization rotation；Salje 2016 则指出复杂 twin patterns 在高 kink/junction 密度下会出现 net macroscopic polarization；Lu 2019 又进一步指出 polar twin boundaries 和 domain junctions 可以带来弱压电样/电致伸缩样响应。也就是说，**Single 的 hump 完全可以通过“bulk 变体贡献 + 非体相残差”这两个部分来分解，而不必先写一大套相场。**([American Physical Society][1])
+
+若你后面还想再往前走半步，但仍然保持简单，我建议只加一个最小闭合：
+[
+\boxed{
+P_{\rm res}(e)\approx c_w\rho_w(e)+c_J\rho_J(e)
+} \tag{11}
+]
+其中 (\rho_w) 是 wall density，(\rho_J) 是 junction density。
+若暂时还不方便做 wall/junction 识别，可以再简化成
+[
+\boxed{
+P_{\rm res}(e)\approx \lambda,\frac{df}{de}
+} \tag{12}
+]
+把 (df/de) 当作 switching front / transient interfacial density 的代理变量。
+式 (11) 更物理，式 (12) 更省事。前者受 Salje 2016 和 Lu 2019 支撑，后者是基于它们的最小数据闭合，不是文献原式。([American Physical Society][2])
+
+---
+
+### 1.4 阈值 / 解锁方程：Single 和 Twin 的差别就放在这里
+
+Guin 和 Kochmann 总结 ferroelectric / ferroelastic domain-wall kinetics 时，给出过三类你最值得引用的原式。
+
+第一类，经典 TDGL / Allen–Cahn：
+[
+\mu \dot p = -\frac{\delta \Psi}{\delta p}. \tag{1.1}
+]
+
+第二类，低驱动下的反指数律：
+[
+V_n=V_\infty \exp(-e_a/e), \tag{2.17}
+]
+高驱动下转为幂律
+[
+V_n\propto (e-e_t)^\theta. \tag{2.18}
+]
+
+第三类，也是对你最有用的一类，Appendix A 给出的 ferroelastic-type threshold law：
+[
+V_{90}(f)=
+\begin{cases}
+0, & |f|<f_0,\
+{\rm sgn}(f),k(|f|-f_0), & |f|\ge f_0.
+\end{cases}
+\tag{A.4}
+]
+同文还明确写到，对 plate-like electric geometry，driving traction 与外场成正比，(f=2p_0e)。([arXiv][3])
+
+你这里是机械压缩，不是电场，所以最自然的对应替换是把 driving traction 近似为机械共轭功密度：
+[
+F_{\rm mech}\sim s,\Delta e_s.
+]
+于是最小阈值模型就变成
+[
+\boxed{
+\dot f =0,\qquad s<s_Y
+} \tag{13}
+]
+[
+\boxed{
+\dot f =M(s-s_Y),\qquad s\ge s_Y
+} \tag{14}
+]
+其中
+[
+\boxed{
+s_Y=\frac{f_0}{\Delta e_s}
+} \tag{15}
+]
+
+这一步不是 Guin 的原式，而是把它的 threshold traction law 映射到机械驱动下的最小闭合。它的好处是：**Single 的“前期不动、后期突然动”就只需要一个更高的 (s_Y) 就够了。** Twin 则对应更低的 (s_Y)，或者更一般地，对应一串分布式局域阈值 (s_{c,i})。([arXiv][3])
+
+若你想把 Twin 的 serration 也一起纳进来，而又不写连续动力学，那么最方便的是直接用离散阈值模型：
+[
+\boxed{
+f(s)=\sum_i \Delta f_i,H(s-s_{c,i})
+} \tag{16}
+]
+这里 (H) 是 Heaviside 函数。它的物理图像很简单：
+
+* 每个 (i) 是一个可跳变的 wall segment / 局域事件；
+* (\Delta f_i) 是该事件造成的切换分数增量；
+* (s_{c,i}) 是该事件的局域阈值。
+
+代回式 (3) 后，stress drop 会自动出现。
+这个模型非常适合 Twin：很多小 (\Delta f_i)，很多分散的 (s_{c,i})，所以表现为连续 serration。
+对 Single，你只要让大部分 (s_{c,i}) 整体右移，或者在早期几乎没有可激活事件，就自然得到“平滑储能—后期解锁”。
+
+为什么 Single 应该整体右移？Salje 2011 说得很清楚：twin-wall intersections 会成为 intrinsic, self-induced defects，形成 jamming；Li 2013 则在 BaTiO(_3) interlocking domains 中直接观察到，90° DW motion 会被 surrounding domains 的强约束抑制，导致高阈值的 DW-free switching。这个逻辑正好给你的 Single 提供了最小解释：
+[
+\boxed{
+s_Y^{\rm Single}=s_0+k_J\rho_J(0)
+} \tag{17}
+]
+其中 (\rho_J(0)) 是初始 junction density。
+这不是某篇文献的原方程，但它是把 Salje 的自生钉扎/jamming 与 Li 的 interlocking-constraint 组合后的最小经验律。
+
+---
+
+## 2. 这 4 组式子和文献原式的关系，到底哪里同、哪里不同
+
+### 2.1 机械部分：你不是抛弃 Hlinka，而是把 Hlinka 降维了
+
+Hlinka 的原式是完整张量、完整极化、完整 LGD。你现在保留的其实只有它最本质的一点：
+**外加载荷通过 (-\sigma:e) 与自发应变耦合，而自发应变由极化状态决定。**
+你把这件事压缩成了一个标量 (e^{tr}=\Delta e_s f)，所以式 (3) 不是“另起炉灶”，而是 Hlinka 式 (10)–(13) 在单轴两变体情况下的 coarse-graining。
+
+### 2.2 动力学部分：你不是求 wall profile，只拿它的阈值律
+
+Guin 的文章本来是为了做 general-kinetics phase-field，用来严格处理不同 wall type 的 velocity law。你现在不需要相场解，也不需要 wall profile，只需要拿走一句最有用的话：
+**ferroelastic wall 的动力学可以是 threshold-type，而且 90° wall 和 180° wall 的 kinetics 可以不同。**
+于是你用式 (13)–(16) 只保留“有阈值、可突发、可分布”的部分，这对解释曲线形状已经足够。([arXiv][3])
+
+### 2.3 极化上冲部分：你不是硬写一个新自由能，而是先做 residual diagnosis
+
+Salje 2016 和 Lu 2019 的重点不是给你一个必须全量求解的 Hamiltonian，而是给你一个重要事实：
+**复杂 twin / junction 网络本身可以带极性，且在高 kink/junction 密度下甚至可能出现净宏观极化。**
+Paul 2009 则告诉你，BaTiO(*3) 的切换路径中可以有中间旋转态。
+所以你完全不必一开始就写复杂壁能；你先用式 (8)–(10) 把 bulk 贡献扣掉，得到 (P*{\rm res})。只要 Single 的 hump 主要体现在 (P_{\rm res}) 上，这条机制就已经被你抓住了。([American Physical Society][2])
+
+### 2.4 雪崩部分：你不用照搬 AE 电压公式，但要保留“事件统计”的思想
+
+Salje 2019 在单晶 BaTiO(_3) 电场切换中定义 jerk energy 为
+[
+E\sim \int_0^T v(t)^2,dt,
+]
+并得到
+[
+p(E)\sim E^{-\varepsilon},
+]
+实验里 (\varepsilon\approx 1.65)，幅值分布指数约 (2.25)，并满足 Omori aftershock law。2022 年 Xu 等又在 BaTiO(_3) 陶瓷里比较了 ferroelectric 与 stress-driven ferroelastic switching，发现机械驱动下的能量指数更靠近 (\varepsilon\sim1.8)，而电场驱动接近 (\sim1.3)。([APS Harvest][4])
+
+你没有 AE 电压信号，没关系。你有应力-应变曲线，所以你可以直接把每次应力跌落对应成一次转变应变 burst：
+[
+\boxed{
+\Delta s_i = -C_{\rm eff}\Delta e_s,\Delta f_i
+} \tag{18}
+]
+因此事件大小可以定义为
+[
+\boxed{
+S_i\equiv |\Delta f_i|
+======================
+
+\frac{|\Delta s_i|}{C_{\rm eff}\Delta e_s}
+} \tag{19}
+]
+事件功可以定义为
+[
+\boxed{
+W_i \approx V,\bar s_i,\Delta e_s,S_i
+=====================================
+
+\frac{V,\bar s_i,|\Delta s_i|}{C_{\rm eff}}
+} \tag{20}
+]
+然后去看
+[
+\boxed{
+p(W)\sim W^{-\varepsilon}
+} \tag{21}
+]
+或者更稳健地画 CCDF：
+[
+\Pr(W_i>W)\sim W^{-(\varepsilon-1)}.
+]
+这不是 Salje 的 AE 原式，但它保留了同样的“事件大小 / 事件能量 / 幂律尾”思想，而且直接适配你现在的 MD 曲线。([APS Harvest][4])
+
+---
+
+## 3. 你现在就能做的参数提取，按最省事版本来
+
+### 3.1 先定 (C_{\rm eff})
+
+最稳妥的是直接取 **Single 前期完全冻结那一段** 的线性斜率：
+[
+\boxed{
+C_{\rm eff}=\left.\frac{ds}{de}\right|*{\rm pre\text{-}yield}
+} \tag{22}
+]
+因为这段最接近“纯弹性储能 + 几乎无变体变化”。
+Twin 前期常常已经开始动了，所以不适合作为 (C*{\rm eff}) 的主拟合段。
+
+操作上，用一段 0–(e_1) 的线性拟合就行；若曲线有轻微数值噪声，用局部线性回归比直接差分更稳。这个思路和式 (6)–(7) 是一致的。([arXiv][3])
+
+### 3.2 再定 (\Delta e_s)
+
+有两种做法。
+
+第一种，最好：
+直接从 MD snapshot 里取“初始变体”和“最终应力有利变体”沿加载轴的平均自发应变，做差：
+[
+\boxed{
+\Delta e_s=e_s^{(final\ variant)}-e_s^{(initial\ variant)}
+} \tag{23}
+]
+这和 Hlinka 的 spontaneous-strain 原式最一致。
+
+第二种，只靠曲线也能做：
+由式 (4)
+[
+e^{tr}=e-s/C_{\rm eff}.
+]
+若初态 (f_i\approx0)，终态 (f_f\approx1)，那么
+[
+\boxed{
+\Delta e_s\approx
+\left(e_f-\frac{s_f}{C_{\rm eff}}\right)
+----------------------------------------
+
+\left(e_i-\frac{s_i}{C_{\rm eff}}\right)
+} \tag{24}
+]
+这相当于把“总转变应变跨度”直接从应力-应变曲线里抠出来。
+只要你的最终态确实接近完全切换，这个估计会非常实用。它是式 (4)–(5) 的直接推导。
+
+### 3.3 用曲线直接重建 (f(e))
+
+有了 (C_{\rm eff}) 和 (\Delta e_s) 以后：
+[
+\boxed{
+f(e)=\frac{e-s/C_{\rm eff}-e^{tr}_0}{\Delta e_s}
+} \tag{25}
+]
+如果你把起点定义成 (e^{tr}_0=0)，那就更简单。
+
+然后你立刻能得到两张非常关键的图：
+
+1. (f(e)) 对比 Twin / Single；
+2. (\dfrac{df}{de}) 或 (E_t(e)) 对比 Twin / Single。
+
+这两张图比“只看原始应力曲线”更有解释力，因为它们直接告诉你：
+Twin 是不是一直在切换；Single 是不是确实长时间冻结到某个阈值才开始切换。
+
+### 3.4 极化的 bulk / residual 分解
+
+先定 (P_0)，最简单就是用初始观测分量。
+再用式 (9) 计算
+[
+P_\parallel^{\rm bulk}(e)=P_0[1-f(e)].
+]
+然后
+[
+P_{\rm res}(e)=P_\parallel^{\rm obs}(e)-P_\parallel^{\rm bulk}(e).
+]
+
+这一步做完，你就会很快得到一个非常清楚的结论：
+
+* 若 Twin 的 (P_{\rm res}) 始终接近 0，Twin 的线性去极化就是纯 bulk 90° 变体切换；
+* 若 Single 的 hump 主要体现在 (P_{\rm res}) 上，说明 hump 是“非 bulk 部分”，也就是局部旋转 / wall-junction 极性 / 去抵消效应。
+
+对你现在的研究，这一步比直接讨论“是不是 flexoelectricity 主导”更稳，因为它先把数据分解清楚了。支撑这个分解思路的文献就是 Paul 2009、Salje 2016 和 Lu 2019。([American Physical Society][1])
+
+### 3.5 屈服应力 (s_Y) 怎么定义
+
+最操作性的定义不是“凭眼看拐点”，而是三选一：
+
+第一种：
+(f(e)) 第一次持续偏离 0 的位置。
+
+第二种：
+(E_t(e)) 第一次明显低于 (C_{\rm eff}) 的位置。
+
+第三种：
+前期线性段与后期软化包络线的交点。
+
+这三个定义对 Single 一般会很接近。
+然后就可以去检验最简单的 jamming 经验式：
+[
+s_Y^{\rm Single}=s_0+k_J\rho_J(0).
+]
+若你暂时只有一组 Single 和一组 Twin，也至少可以写成定性版本：Single 的 (s_Y) 高于 Twin，说明其初始网络具有更高的有效闭锁阈值，这与 interlocking-domain constraint 和 self-induced jamming 一致。
+
+---
+
+## 4. 事件、雪崩、锯齿，怎样最简单地做
+
+### 4.1 Twin 的锯齿最容易先做
+
+对轻微平滑后的 (s(e)) 曲线，找局部极大值和后续局部极小值。每一对就定义一个 stress-drop event：
+[
+\Delta s_i=s_i^{\rm pre}-s_i^{\rm post}>0.
+]
+然后用式 (19)
+[
+S_i=\frac{\Delta s_i}{C_{\rm eff}\Delta e_s}.
+]
+这就是“第 (i) 次事件造成的切换分数量”。
+
+再用式 (20) 算
+[
+W_i\approx \frac{V,\bar s_i,\Delta s_i}{C_{\rm eff}}.
+]
+这就是最简单的事件功标定。
+然后先画 CCDF，不要先画 PDF：
+[
+N(>W).
+]
+CCDF 对小样本更稳。
+
+这一套与 Salje 2019 / Xu 2022 的 avalanche 思路一脉相承，只是你把 AE 信号改成了 stress-drop work proxy。([APS Harvest][4])
+
+### 4.2 何时可以说“雪崩”，何时只能说“burst-like”
+
+这个界限要讲清楚：
+
+* 若你只有十几个到几十个事件，最多写 **burst-like / avalanche-like**；
+* 若你有至少 1–2 个 decade 的分布区间，且 CCDF 近似直线，才适合写 power-law-like；
+* 若你还做了指数稳定性或不同 cutoff 的鲁棒性，才更接近正式地写 avalanche statistics。
+
+对 BaTiO(_3) 文献来说，电场驱动单晶的典型能量指数约 (1.65)，机械驱动陶瓷约 (1.8)，而陶瓷电场驱动更接近 (1.3)。你的 MD 体系尺寸更小、应变率更高、通常没有真实缺陷，**所以指数不必跟实验一模一样**。你更应该先比较 Twin 与 Single 的相对差异：Twin 是“多而小”，Single 是“少而大”还是“少而成簇”。([APS Harvest][4])
+
+---
+
+## 5. 用这套简单模型，Twin 和 Single 会被怎样解释
+
+### 5.1 Twin
+
+在这套最小模型里，Twin 对应的是：
+
+* 低阈值或分布较宽的 ({s_{c,i}})；
+* 事件很多，但单次 (\Delta f_i) 小；
+* 因此 (f(e)) 从较早阶段就开始增加；
+* (P_\parallel^{\rm bulk}=P_0(1-f)) 会近似线性下降；
+* (P_{\rm res}\approx0) 或很小；
+* (s(e)) 上则出现连续 serration。
+
+这正好对应你现在观察到的“应力很多锯齿，但极化几乎单调线性下降”。它不需要复杂理论，式 (3)+(9)+(16) 就能完整解释。支撑这套图像的文献基础是 pinned/depinning kinetics、ferroelectric crackling statistics，以及 90° wall 的 strain-coupled switching。([arXiv][3])
+
+### 5.2 Single
+
+Single 对应的是：
+
+* 较高的有效阈值 (s_Y)；
+* 前期 (f\approx0)，所以 (s\approx C_{\rm eff}e)；
+* 到达 yield 后，(df/de) 快速上升，模量下降，出现拐点；
+* 若只看 bulk 变体项，(P_\parallel^{\rm bulk}) 应该开始下降；
+* 但若实际出现上冲，则说明 (P_{\rm res}>0) 在 yield 附近有峰。
+
+这时最稳的解释不是“Single 的 bulk 极化突然变大”，而是：
+**Single 在解锁瞬间出现了一个 transient non-bulk contribution。**
+它可能来自三件事中的一件或几件叠加：
+
+1. 变体去抵消 / repolarization；
+2. 局部 rotation through intermediate states；
+3. wall / junction transient polarity。
+
+Li 2013 的 interlocking-domain 结果和 Salje 2011 的 self-induced jamming 都支持“前期被卡住、到阈值才整体释放”；Paul 2009、Salje 2016、Lu 2019 则支持“释放瞬间会出现额外极化贡献”。所以 Single 的“平滑—拐点—上冲—再下降”完全可以用这组简单式子闭合。([AIP Publishing][5])
+
+---
+
+## 6. 我建议你实际画的图，按重要性排序
+
+第一张：原始 (s-e) 与 (P-e) 曲线。
+把 Twin / Single 放在一起，并在 Single 上标出 (s_Y) 或 (e_Y)。
+
+第二张：由式 (4) 和式 (25) 重建的 (e^{tr}(e)) 与 (f(e))。
+这是最核心的新图，因为它把“曲线形状”变成了“切换进度”。
+
+第三张：切线模量
+[
+E_t(e)=ds/de
+]
+以及由式 (7) 算出的 (df/de)。
+这一张最能显示 Twin 的持续小事件和 Single 的 delayed yielding。
+
+第四张：
+[
+P_\parallel^{\rm bulk}(e),\qquad P_\parallel^{\rm obs}(e),\qquad P_{\rm res}(e).
+]
+这是解释 Single hump 的决定性图。
+
+第五张：事件统计。
+建议画 (W_i) 或 (S_i) 的 CCDF，而不是先画 PDF。
+有足够数据再做幂律拟合，没有足够数据就只比较 Twin / Single 的分布宽度和均值。
+
+第六张，若有 domain map：
+[
+\rho_w(e),\qquad \rho_J(e)
+]
+再和 (P_{\rm res}(e)) 对比。
+如果 (P_{\rm res}) 峰值与 (\rho_w) 或 (\rho_J) 的峰值同步，你关于 wall/junction contribution 的论证会非常硬。Salje 2016 和 Lu 2019 支撑这种比较。([American Physical Society][2])
+
+---
+
+## 7. 你论文里最适合写成什么样
+
+我建议正文里不要摆完整 LGD，只写下面这一套“最小模型”：
+
+先给一句理论来源：
+“基于 BaTiO(_3) 90° 变体的自发应变-极化耦合与 ferroelastic wall 的阈值型动力学，我们将单轴压缩下的响应简化为一个切换分数 (f) 控制的转变应变模型。” 
+
+然后直接给 4 条主式子：
+[
+s=C_{\rm eff}(e-\Delta e_s f), \tag{3}
+]
+[
+f=\frac{e-s/C_{\rm eff}-e^{tr}*0}{\Delta e_s}, \tag{25}
+]
+[
+P*\parallel^{\rm bulk}=P_s[(1-f)\cos\theta_i+f\cos\theta_f], \tag{8}
+]
+[
+P_{\rm res}=P_\parallel^{\rm obs}-P_\parallel^{\rm bulk}. \tag{10}
+]
+
+再补一句动力学闭合：
+[
+\dot f=0 \ (s<s_Y),\qquad \dot f=M(s-s_Y)\ (s\ge s_Y), \tag{13-14}
+]
+或者离散地
+[
+f(s)=\sum_i \Delta f_i H(s-s_{c,i}). \tag{16}
+]
+
+最后用一段话解释 Twin / Single：
+
+* Twin：低阈值、分散式 depinning，导致 (f) 早起并呈多次小跳；
+* Single：高阈值、network jamming，导致 (f) 长时间冻结并在 yield 附近快速增长；
+* Single 的极化上冲由 (P_{\rm res}>0) 表征，对应 transient non-bulk polarization contribution。
+
+---
+
+## 8. 最后给你一份最小参考文献清单，只保留真正有用的
+
+1. **Hlinka, J.; Márton, P.** “Phenomenological model of a 90° domain wall in BaTiO(_3)-type ferroelectrics,” **Phys. Rev. B 74, 104104 (2006)**。你真正要用的是文中的 Eq. (10)–(13)：不完全 Gibbs 自由能、弹性能、电致伸缩项和 spontaneous strain 公式。
+
+2. **Guin, L.; Kochmann, D. M.** “A phase-field model for ferroelectrics with general kinetics. Part I: Model formulation,” **J. Mech. Phys. Solids 176, 105301 (2023)**。你真正要用的是 Eq. (1.1)、(2.17)、(2.18) 和 Appendix (A.4)：线性 TDGL、低驱动反指数律、高驱动幂律、以及 ferroelastic wall 的 threshold-linear kinetics。([arXiv][3])
+
+3. **Salje, E. K. H. et al.** “Thermally activated avalanches: Jamming and the progression of needle domains,” **Phys. Rev. B 83, 104109 (2011)**。最重要的信息不是具体模型细节，而是“wall intersections 是 intrinsic, self-induced defects，会导致 jamming 和 crackling”。
+
+4. **Salje, E. K. H. et al.** “Ferroelectric switching and scale invariant avalanches in BaTiO(_3),” **Phys. Rev. Materials 3, 014415 (2019)**。你真正要用的是 (p(E)\sim E^{-\varepsilon})、(E\sim\int v^2dt)、Omori law，以及电驱 BaTiO(_3) 单晶的参考指数。([APS Harvest][4])
+
+5. **Xu, Y. et al.** “Avalanches during ferroelectric and ferroelastic switching in barium titanate ceramics,” **Phys. Rev. Materials 6, 124413 (2022)**。这篇很适合你，因为它直接比较了 BaTiO(_3) 中 ferroelectric 与 stress-driven ferroelastic switching 的 avalanche 指数差异。([APS Harvest][6])
+
+6. **Li, F. et al.** “90-degree polarization switching in BaTiO(_3) crystals without domain wall motion,” **Appl. Phys. Lett. 103, 232901 (2013)**。这篇是 Single 最关键的机制支撑：interlocking domains 会抑制 90° DW motion，并显著抬高阈值。([AIP Publishing][5])
+
+7. **Salje, E. K. H. et al.** “Flexoelectricity and the polarity of complex ferroelastic twin patterns,” **Phys. Rev. B 94, 024114 (2016)**，以及 **Lu, G. et al.** “Piezoelectricity and electrostriction in ferroelastic materials with polar twin boundaries and domain junctions,” **Appl. Phys. Lett. 114, 202901 (2019)**。这两篇共同支撑 (P_{\rm res}) 的物理来源。([American Physical Society][2])
+
+8. **Paul, J. et al.** “Polarization rotation, switching, and electric-field–temperature phase diagrams of ferroelectric BaTiO(_3),” **Phys. Rev. B 80, 024107 (2009)**。这篇支撑“中间旋转态”作为 Single 上冲的次级机制。([American Physical Society][1])
+
+对你这篇工作来说，真正该落到图和参数上的，不是完整相场，而是这四个量：
+[
+f(e),\quad E_t(e),\quad P_{\rm res}(e),\quad W_i\ \text{or}\ S_i.
+]
+只要这四个量做出来，Twin 和 Single 的差别就已经从“看图说话”变成“最小模型 + 可计算量 + 文献支撑”的完整闭环。下一步最自然的是把你现有的 (\sigma-\varepsilon-P) 数据直接代入这 4 条式子，生成 (f(\varepsilon))、(E_t(\varepsilon))、(P_{\rm res}(\varepsilon)) 和事件统计图。
+
+[1]: https://link.aps.org/doi/10.1103/PhysRevB.80.024107?utm_source=chatgpt.com "Polarization rotation, switching, and electric-field–temperature phase ..."
+[2]: https://link.aps.org/doi/10.1103/PhysRevB.94.024114?utm_source=chatgpt.com "Flexoelectricity and the polarity of complex ferroelastic twin patterns"
+[3]: https://arxiv.org/pdf/2203.16479v1 "A phase-field model for ferroelectrics with general kinetics. Part I: Model formulation"
+[4]: https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevMaterials.3.014415/fulltext "Ferroelectric switching and scale invariant avalanches in ${\rm{BaTi}}{{\rm{O}}_3}$"
+[5]: https://pubs.aip.org/aip/apl/article/103/23/232901/25947/90-degree-polarization-switching-in-BaTiO3?utm_source=chatgpt.com "90-degree polarization switching in BaTiO3 crystals without domain wall ..."
+[6]: https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevMaterials.6.124413/fulltext "Avalanches during ferroelectric and ferroelastic switching in barium titanate ceramics
+"
