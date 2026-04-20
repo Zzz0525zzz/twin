@@ -1,0 +1,2 @@
+case,model,coef_1,coef_2,coef_3,r2
+twin,stress ~ C*strain - K*(1-m_y),192.1,2.110350975560473,,0.9976047991212602
