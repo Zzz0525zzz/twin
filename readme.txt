@@ -7,45 +7,30 @@ Theory_compute中存放理论分析代码与文件
 
 BaTiO3 Twin / Single under Uniaxial Compression
 
-本项目研究 BaTiO3（钛酸钡）在 y 轴单轴压缩条件下的力学—极化耦合响应，重点比较两类初始结构：Twin 与 Single。仓库包含模拟输入、原始输出以及后处理脚本，用于分析应力、极化统计量和相关诊断量的演化规律。
+BaTiO3 under y-axis Uniaxial Compression: Twinned vs. Reference Configurations
+
+本项目研究 BaTiO3（钛酸钡）在 y 轴单轴压缩条件下的力学—极化耦合响应，重点比较两类初始构型：twinned configuration 与 reference configuration。仓库包含模拟输入、活跃计算数据、后处理脚本和分析图，用于研究不同初始构型在相同加载路径下如何产生不同的宏观力学—极化演化。
 
 背景
-BaTiO3 的压缩响应不仅是单纯的力学问题，还与极化结构、自发应变和局域重排密切耦合。早期解释常依赖 hidden switching fraction、等效转变应变或等效模量等隐变量；而在当前项目中，随着可直接读取的极化统计量增多，研究主线已转向更直接、可自检的极化二阶量框架。
+BaTiO3 在机械压缩下的响应并不是单纯的弹性问题，而是 spontaneous polarization、spontaneous strain、domain architecture 与局部重排共同耦合的结果。对这类 ferroelastic/ferroelectric 体系而言，真正重要的问题不是“是否存在某个更方便的状态变量”，而是：在相同外加载荷下，不同初始构型是否会走出不同的 strain-accommodation pathway，并因此表现出不同的应力响应、极化组织和局部活动。
 
-当前主线
-本项目当前采用的核心变量为：
-M_{2,y} = <P_y^2>
+项目问题
+本项目当前关注的核心不是再构造一个 hidden variable，而是比较 twinned 与 reference 两类初始构型在相同 y 轴压缩条件下是否共享某种共同的状态演化骨架，同时又通过不同的组织重排与动态解锁路径产生不同的宏观力学差异。换句话说，本项目更关心“共同状态 + 不同路径”，而不是把某个单独指标直接当成整篇工作的起点。
 
-并定义其无量纲进度：
-m_y(e) = M_{2,y}(e) / M_{2,y}(0)
+当前分析框架
+为描述这条路径，仓库当前使用一组可直接计算的路径坐标：
+- M_{2,y} = <P_y^2>：沿 y 方向保留的极化二阶内容；
+- m_y(e) = M_{2,y}(e) / M_{2,y}(0)：共享状态进度；
+- O_parallel = <|P_y|>：局域 y 向幅值平均；
+- chi_parallel = |<P_y>| / <|P_y|>：同号协同 / 正负抵消的组织指标。
 
-同时保留两个辅助量：
-O_parallel = <|P_y|>
-chi_parallel = |<P_y>| / <|P_y|>
+在当前框架下，M_{2,y} 与 m_y 更适合作为 shared state coordinate，用来刻画沿加载轴的极化内容如何演化；chi_parallel 更适合作为 pathway indicator，用来区分不同构型在组织重排上的差异；O_parallel 则主要保留为辅助幅值信息。E_t、delta_sigma_serr、S_rms 等量主要用于诊断路径分岔、局部活动和动态解锁过程。
 
-其中：
-- M_{2,y}：主状态变量，描述沿 y 方向保留的极化二次内容；
-- O_parallel：直观代理量，表示 y 向局域幅值平均；
-- chi_parallel：组织变量，表征同号协同与正负抵消程度。
+当前理解
+现有分析表明，twinned 与 reference 两类构型在相同压缩条件下表现出明显不同的宏观力学响应，但这种差异并不能简单归结为“是否拥有完全不同的主状态变量”。更合理的工作假设是：两者可以在一定程度上共享沿 y 方向的极化状态演化骨架，而真正拉开力学差异的是这些状态变化如何被组织成不同的应变容纳路径。当前结果尤其表明，reference 构型更容易表现出显著的组织重排，而 twinned 构型更容易更早进入局部活动与空间异质化增强阶段。
 
-当前机理解释
-当前最小可靠机理写作：
-s(e) ≈ a_e e + a_M [1 - m_y(e)] + r(e)
+项目定位
+本仓库当前并不试图直接建立一个普适本构，而是提供一个可直接计算、可逐步检验的 reduced description，用来连接：
+initial configuration → accommodation pathway → macroscopic mechanical–polarization response
 
-其中 s = |sigma_y|，e = |epsilon_y|。这表示：随着压缩推进，沿 y 方向的极化二次内容逐渐耗损，体系的内部容纳方式随之变化，从而使机械曲线偏离纯骨架响应。
-
-在这一框架下：
-- Twin：m_y 更早下降，表现为更早软化、更早出现局部活动；
-- Single：除主状态耗损外，中段 chi_parallel 上升更明显，说明还伴随更强的组织重排。
-
-因此，当前结论是：
-Twin / Single 的主要差异，不在于主状态变量不同，而在于同一主状态 M_{2,y} 的不同耗损路径、组织路径和解锁方式。
-
-当前研究现状
-目前项目已形成一条较清晰的分析链：
-- 用应力—应变曲线比较 Twin / Single 的整体机械差异；
-- 用 M_{2,y} 和 m_y 描述主状态耗损；
-- 用 chi_parallel 描述组织层差异；
-- 用 E_t、delta_sigma_serr、S_rms 作为第二层动力学诊断量。
-
-其中，旧版本中的 hidden switching fraction 主链已降级，不再作为默认主解释框架。
+因此，M_{2,y}-based state coordinate、organization indicators 与动力学诊断量的角色，都是服务于这条整体故事，而不是彼此竞争成为“唯一核心变量”。旧版本中以 hidden switching fraction 为中心的解释已不再作为默认主线；后续若补充更完整的初始构型定量、横向二阶极化项或真实空间结构证据，当前框架仍可继续升级。
