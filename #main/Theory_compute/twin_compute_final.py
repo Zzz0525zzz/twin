@@ -329,7 +329,7 @@ def build_case(case: str, paths: CasePaths) -> CaseResult:
     y_loading = merged_loading["stress_y"].to_numpy()
     prog_M2_loading = merged_loading["progress_M2y"].to_numpy()
 
-    C_candidates = np.linspace(170.0, 220.0, 501)
+    C_candidates = np.linspace(100.0, 300.0, 501)
     best_sse = float('inf')
     best_C = 170.0
     best_K = 0.0

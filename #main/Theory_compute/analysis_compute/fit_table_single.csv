@@ -1,2 +1,2 @@
 case,model,coef_1,coef_2,coef_3,r2
-single,stress ~ C*strain - K*(1-m_y),220.0,3.016311406404116,,0.9968044250380259
+single,stress ~ C*strain - K*(1-m_y),232.4,3.267751107905086,,0.9970902825854396
