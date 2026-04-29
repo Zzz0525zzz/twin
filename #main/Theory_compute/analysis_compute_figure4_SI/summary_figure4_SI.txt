@@ -1,0 +1,76 @@
+BaTiO3 Ref. / 90° DW Figure 4 + SI model comparison summary
+==============================================================================
+
+Main interpretation:
+  The reduced relation is treated as a semi-quantitative field-to-stress
+  consistency test, not as a universal constitutive model.
+  Fitted coefficients are effective projection coefficients, not intrinsic
+  elastic or electrostrictive constants.
+
+[Ref. / legacy=single]
+  n_merged        : 100
+  n_loading       : 100
+  strain_max      : 0.01995098
+  stress_max_load : 2.05957702
+  m_y_end_loading : 0.01124507
+
+[90° DW / legacy=twin]
+  n_merged        : 100
+  n_loading       : 100
+  strain_max      : 0.01995098
+  stress_max_load : 1.75301314
+  m_y_end_loading : 0.00801278
+
+Model metrics on loading segment:
+                                           model   case   n     rmse      mae  max_abs_error       r2  nrmse_range  nrmse_mean_abs
+                  M1_linear_strain_only_separate    Ref 100 0.103012 0.080320       0.292292 0.968147     0.050776        0.120427
+                  M1_linear_strain_only_separate   90DW 100 0.169855 0.138804       0.482409 0.866949     0.097354        0.284303
+                  M1_linear_strain_only_separate pooled 200 0.140467 0.109562       0.482409 0.932340     0.068478        0.193370
+               M1_quadratic_strain_only_separate    Ref 100 0.042911 0.031734       0.115976 0.994473     0.021151        0.050166
+               M1_quadratic_strain_only_separate   90DW 100 0.080177 0.067495       0.205375 0.970354     0.045954        0.134201
+               M1_quadratic_strain_only_separate pooled 200 0.064303 0.049614       0.205375 0.985821     0.031348        0.088521
+                         M2_common_coeff_reduced    Ref 100 0.075459 0.061988       0.172290 0.982908     0.037195        0.088216
+                         M2_common_coeff_reduced   90DW 100 0.081765 0.059281       0.213075 0.969168     0.046864        0.136858
+                         M2_common_coeff_reduced pooled 200 0.078675 0.060634       0.213075 0.978775     0.038354        0.108306
+                  M3_structure_dependent_reduced    Ref 100 0.029468 0.022101       0.097951 0.997393     0.014525        0.034450
+                  M3_structure_dependent_reduced   90DW 100 0.022319 0.016055       0.063734 0.997703     0.012792        0.037357
+                  M3_structure_dependent_reduced pooled 200 0.026139 0.019078       0.097951 0.997657     0.012743        0.035984
+            M4_constrained_common_Ae_separate_AM    Ref 100 0.031993 0.027418       0.085390 0.996927     0.015770        0.037402
+            M4_constrained_common_Ae_separate_AM   90DW 100 0.023558 0.017781       0.067441 0.997441     0.013502        0.039431
+            M4_constrained_common_Ae_separate_AM pooled 200 0.028094 0.022599       0.085390 0.997294     0.013696        0.038675
+            M5_constrained_separate_Ae_common_AM    Ref 100 0.029795 0.023699       0.092385 0.997335     0.014686        0.034832
+            M5_constrained_separate_Ae_common_AM   90DW 100 0.022450 0.015993       0.064641 0.997676     0.012868        0.037577
+            M5_constrained_separate_Ae_common_AM pooled 200 0.026379 0.019846       0.092385 0.997614     0.012860        0.036314
+M6_cross_prediction_using_other_structure_coeffs    Ref 100 0.167392 0.135422       0.315088 0.915889     0.082510        0.195691
+M6_cross_prediction_using_other_structure_coeffs   90DW 100 0.158948 0.139945       0.286183 0.883487     0.091103        0.266047
+
+Fit coefficients:
+                                           model   case            coefficient       value
+                  M1_linear_strain_only_separate    Ref           Ae_effective   88.581343
+                  M1_linear_strain_only_separate   90DW           Ae_effective   63.686297
+               M1_quadratic_strain_only_separate    Ref           Ae_effective   57.287863
+               M1_quadratic_strain_only_separate    Ref           Be_effective 2080.979621
+               M1_quadratic_strain_only_separate   90DW           Ae_effective   13.649350
+               M1_quadratic_strain_only_separate   90DW           Be_effective 3327.398044
+                         M2_common_coeff_reduced pooled    Ae_common_effective  227.469768
+                         M2_common_coeff_reduced pooled    AM_common_effective    2.592933
+                  M3_structure_dependent_reduced    Ref Ae_structure_effective  212.456577
+                  M3_structure_dependent_reduced    Ref AM_structure_effective    2.219644
+                  M3_structure_dependent_reduced   90DW Ae_structure_effective  191.045651
+                  M3_structure_dependent_reduced   90DW AM_structure_effective    2.090568
+            M4_constrained_common_Ae_separate_AM pooled    Ae_common_effective  196.785142
+            M4_constrained_common_Ae_separate_AM    Ref       AM_Ref_effective    1.940158
+            M4_constrained_common_Ae_separate_AM   90DW      AM_90DW_effective    2.183570
+            M5_constrained_separate_Ae_common_AM    Ref       Ae_Ref_effective  206.935914
+            M5_constrained_separate_Ae_common_AM   90DW      Ae_90DW_effective  192.882715
+            M5_constrained_separate_Ae_common_AM pooled    AM_common_effective    2.120723
+M6_cross_prediction_using_other_structure_coeffs    Ref           Ae_from_90DW  191.045651
+M6_cross_prediction_using_other_structure_coeffs    Ref           AM_from_90DW    2.090568
+M6_cross_prediction_using_other_structure_coeffs   90DW            Ae_from_Ref  212.456577
+M6_cross_prediction_using_other_structure_coeffs   90DW            AM_from_Ref    2.219644
+
+Suggested SI wording:
+  The common-coefficient reduced relation captures the dominant stress trend
+  in both domain structures, while structure-dependent coefficients refine
+  the quantitative agreement. The coefficients are therefore interpreted as
+  effective projection measures rather than intrinsic material constants.
