@@ -1,7 +1,127 @@
-# Scripta Materialia Letter-style Introduction Draft v1
+# Merged Results Package v2
 
-Mechanical compression in ferroelectrics is inseparable from domain-mediated strain accommodation. In tetragonal perovskites, symmetry-related variants carry coupled spontaneous polarization and spontaneous strain; uniaxial loading can therefore bias variant stability, drive ferroelastic reorientation and non-180° switching, and redistribute stress through compatibility constraints [1–4]. The resulting response depends not only on lattice elasticity, but also on how domain-wall motion, pinning or clamping, and local stress transfer organize deformation across the domain structure [1–6].
+**Working title:** Domain structure modulates mechanical response through polarization evolution in ferroelectrics
 
-Extensive work has shown that ferroelectric and ferroelastic switching are strongly shaped by boundary conditions, defects, interfaces, grain constraints, and local stress fields [2–10]. Diffraction and time-resolved measurements quantify switching fractions and averaged lattice strains, while real-space imaging resolves nucleation, wall displacement, pinning, and domain patterns retained after loading [3–8,10]. These approaches establish when reorientation begins, how much material transforms, and where walls move. What remains difficult to read from them is how the same external compression is converted into spatially organized strain accommodation when the initial domain architecture is changed. In particular, comparable changes in the polarization component along the loading direction do not necessarily imply comparable stress–strain responses, because compatibility constraints and wall-mediated stress redistribution are folded into the same macroscopic signal.
+## 1. Figure captions
 
-Here we examine this problem in BaTiO3, a representative tetragonal ferroelectric in which spontaneous polarization, ferroelastic strain, and non-180° reorientation are directly coupled. The 90° DW configuration and the reference configuration are subjected to the same y-axis uniaxial compression, fixing the material system and loading path while changing the initial domain architecture. The comparison reveals markedly different compressive responses despite a partly shared evolution of the loading-axis polarization component. This contrast is traced to how the initial domain architecture organizes ferroelastic reorientation and strain redistribution during loading, identifying spatial accommodation of polarization reorganization as the link between initial domain state and macroscopic mechanical response.
+**Figure 1. Initial domain structures and compression geometry.** (a) Simulation cell under y-axis compression. (b,c) Initial polarization maps of Ref. and 90° DW. Arrows indicate local polarization, and color denotes Pz.
+
+**Figure 2. Stress response and averaged loading-axis polarization.** (a) Stress–strain curves for Ref. and 90° DW under y-axis compression. (b) Averaged Py and |Py| during compression.
+
+**Figure 3. Local Py evolution during compression.** Local Py maps and in-plane polarization vectors for Ref. and 90° DW at εy = −1.0%, −1.5%, and −2.0%.
+
+**Figure 4. Loading-axis polarization strength and reduced stress relation.** (a) Normalized loading-axis polarization strength, m_y = <Py²>_e / <Py²>_0. (b) Simulated compressive-stress magnitude and reduced relation s(e) ≈ a_e e + a_m[1 − m_y(e)].
+
+---
+
+## 2. Results and Discussion draft
+
+Ref. and 90° DW reveal how an initial domain structure changes the mechanical pathway under an otherwise identical compression path. The two configurations share the same BaTiO3 model, cell geometry, and y-axis loading protocol, with the initial domain structure as the controlled distinction (Fig. 1). Under this common compression path, Ref. reaches the larger compressive-stress magnitude over much of the loading range, whereas 90° DW carries the imposed strain at a lower magnitude and shows an oscillatory stress evolution through the early-to-intermediate loading stage (Fig. 2a). The 90° DW response therefore changes both the stress level and the way stress evolves during loading, consistent with a non-smooth strain-accommodation process. Because polarization redistribution provides a natural route for strain accommodation in ferroelectrics, this mechanical contrast should be reflected in the evolution of the loading-axis polarization.
+
+The averaged polarization curves show that the two stress histories are accompanied by different timing of loading-axis polarization redistribution. In Ref., the early Py remains small despite a large |Py|, showing that loading-axis components are present locally but cancel in the signed average. As compression proceeds, Ref. develops a delayed increase in signed Py before both Py and |Py| are suppressed, indicating a redistribution of local loading-axis components rather than a simple monotonic loss from the initial state. In 90° DW, Py and |Py| are initially close, so the loading-axis component is more sign-coherent before it decreases during compression. At larger strain, the signed Py oscillates around a small magnitude while |Py| varies more smoothly, indicating residual sign redistribution after most Py strength has been reduced. The averaged curves therefore establish polarization rearrangement, but they do not resolve the spatial pathway through which local Py is removed.
+
+The local Py maps identify the spatial route of loading-axis polarization removal. The three marked states in Fig. 3, εy = −1.0%, −1.5%, and −2.0%, sample the onset, intermediate development, and near-completion of loading-axis Py suppression. In Ref., local Py is still retained in part of the cell at the first marked state and then weakens through a nonuniform reorientation away from the loading axis. In 90° DW, the evolving Py field retains the imprint of the initial 90° domain-wall pattern even as the Py magnitude is strongly reduced, with local polarization reorienting around that pattern. The important difference is not the eventual suppression of Py, but the spatial route by which that suppression occurs. The initial domain structure therefore selects a polarization redistribution pathway during compression, providing the spatial basis for the different mechanical responses.
+
+The pathway difference in the local Py field requires a scalar measure of loading-axis polarization strength. A signed average removes oppositely oriented local components, although those components still contribute to the local loading-axis polarization strength. We therefore use the normalized second moment
+
+m_y(e) = <P_y²>_e / <P_y²>_0,
+
+where the brackets denote spatial averaging. Unlike <Py>, m_y retains this local contribution and tracks the remaining loading-axis Py strength during compression. Figure 4a shows that Ref. and 90° DW initially follow similar m_y trajectories, but separate after the first marked stage. Ref. retains an intermediate shoulder in m_y, whereas 90° DW continues toward lower values, consistent with earlier removal of loading-axis Py strength along the domain-wall-organized pathway. Both structures eventually approach a low-m_y state; a final-state comparison alone would therefore miss the distinct timing and trajectories of Py-strength loss.
+
+The Py-strength trajectory provides the polarization variable needed to write the stress response in a reduced form. We use
+
+s(e) ≈ a_e e + a_m[1 − m_y(e)],
+
+where a_e e gives the smooth strain-driven background and 1 − m_y(e) measures the progress of loading-axis Py-strength loss. In Fig. 4b, this expression places the higher-stress Ref. branch and the lower, non-smooth 90° DW branch on their corresponding polarization-strength trajectories, rather than treating both responses as strain-only curves. The strain-only reference in the Supplementary Information retains the smooth background but does not reproduce the structure-sensitive variation associated with 90° DW. The common-coefficient form further shows that the role of the polarization-strength term does not come only from assigning separate coefficients to the two structures. The reduced relation therefore connects the stress response to the domain-selected pathway of Py-strength redistribution.
+
+By linking the local Py-redistribution route to a stress-relevant trajectory, the reduced relation shows that Ref. and 90° DW differ in load accommodation rather than only in stress magnitude. The mechanical response is shaped by the imposed compression and by the route through which the initial domain structure removes loading-axis Py strength. Domain-structure control can therefore tune how ferroelectrics carry mechanical load, not only by setting the initial polarization state but also by selecting the polarization-mediated stress-evolution pathway.
+
+---
+
+## 3. Supplementary Information figures and tables
+
+Note: the SI is used here mainly to hold supporting figures and tables. The interpretation of these SI results should be described in the main text when discussing Fig. 4, rather than moved into a separate SI narrative.
+
+**Supplementary Fig. S1. Compact model comparison for the reduced stress description.** This figure contains the measured stress response together with two supporting descriptions not shown in the main Fig. 4b: a quadratic strain-only baseline and a common-coefficient reduced relation. Optional small residual insets can be included in the same figure.
+
+**Supplementary Table S1. Compact fit-quality summary.** This table reports only the minimum metrics needed to support the Figure 4 comparison, such as R², RMSE, and normalized RMSE for the quadratic strain-only baseline, the common-coefficient reduced relation, and the structure-dependent reduced relation used in Fig. 4b. Avoid listing excessive fitted parameters.
+
+**Supplementary Table S2. Core-shell potential parameters used in the MD simulations.** This table reports the core-shell force-field parameters used for BaTiO3, including charges, short-range interaction parameters, shell spring constants, and long-range electrostatic settings required to reproduce the simulations. Numerical values will be added later.
+
+---
+
+## 4. Immediate editing notes
+
+1. Check whether Fig. 1 color indeed denotes Pz in the final version.
+2. Fig. 3 uses εy = −1.0%, −1.5%, and −2.0% as the marked stages corresponding to the onset, intermediate development, and near-completion of loading-axis Py suppression.
+3. Keep Fig. 4b as the structure-dependent reduced relation in the main text; use the quadratic strain-only baseline and common-coefficient reduced relation only as compact SI support.
+4. Current SI layout is: Supplementary Fig. S1, Supplementary Table S1, and Supplementary Table S2. The main Results text should describe what these supporting items mean; the SI itself mainly provides the figure/table evidence.
+5. If the final figure uses subscript notation, convert Py, Pz, <Py²>, and m_y into the journal’s preferred mathematical style.
+
+---
+
+# Writing and Model-Workflow Guardrails for This Letter
+
+These rules should guide all subsequent manuscript edits. They are not manuscript text; they are working constraints for drafting, revision, and model-assisted editing.
+
+## A. Target-journal writing principles
+
+1. Treat the manuscript as a Letter, not a full experimental report. Every paragraph must advance one central result: domain structure changes the polarization pathway, and that pathway is expressed in the mechanical response.
+2. Prioritize mechanism over chronology. Do not simply explain Fig. 1, then Fig. 2, then Fig. 3, then Fig. 4. Figures may appear in order, but the prose must be driven by the scientific problem.
+3. Keep the Scripta Materialia target in mind: short, direct, structure-property oriented, and mechanistic. The text should emphasize how an initial structural state changes a functional/mechanical response through a specific pathway.
+4. Keep the APL target in mind as a secondary style: concise, physics-facing, and centered on one clear applied-physics result. Avoid long methodological justification in the main Results.
+5. Figure 2 introduces the mechanical contrast; Figure 3 gives spatial evidence for different local Py pathways; Figure 4 is the quantitative core that connects polarization-strength evolution to the dominant stress response.
+6. The Results should not read as a balanced description of all figures. It should make the strongest result visible: the 90° DW stress response, especially its early oscillatory features, is tied to the polarization-strength pathway and is not recovered from strain alone.
+
+## B. Anti-AI writing rules
+
+1. Do not use generic summary phrases such as “central conclusion,” “taken together,” “mechanism-level link,” “trend-level closure,” “compact field-level signature,” “the missing information is,” or “this controlled comparison allows.”
+2. Avoid paragraph templates of the form “A shows X; however B cannot explain Y; therefore C provides Z.” This is logically clear but reads like AI-generated explanation.
+3. Prefer concrete subjects over abstract subjects. Use “90° DW,” “Ref.,” “the stress oscillations,” “m_y,” “the strain-only baseline,” and “the local Py field” as subjects whenever possible.
+4. Avoid process-reporting verbs unless necessary: “we examine,” “we compare,” “we convert,” “we test.” Prefer result-driven verbs: “separates,” “decreases,” “follows,” “misses,” “retains,” “organizes,” “accounts for.”
+5. Do not overuse defensive boundary language in the main Results. Avoid repeated statements such as “not universal,” “not a constitutive law,” or “not a state variable.” Put coefficient/model-boundary details in Methods, caption, or SI unless one short sentence is essential.
+6. Do not polish AI-like paragraphs after the fact only by replacing words. AI flavor often comes from structure, subject choice, and claim ordering. Each paragraph must be shaped correctly before final polishing.
+7. Avoid unsupported elegance. A sentence is only good if it points to a visible feature in the figure or a specific formula/model comparison.
+
+## C. Sentence-level quality checks
+
+Before accepting any sentence, check:
+
+1. Does the sentence contain a concrete object from the study, or only abstract nouns?
+2. Does it point to a visible result, a measured trend, or a defined quantity?
+3. Does it make one claim only?
+4. Is the claim stronger than the data allow?
+5. Would the sentence still matter if the figure number were removed?
+6. Does the sentence sound like an author interpreting data, or like an assistant explaining a workflow?
+7. Can the sentence be shortened without losing the scientific claim?
+
+## D. Results drafting workflow
+
+Use this workflow instead of one-step full-section rewriting.
+
+1. For each paragraph, first write the Chinese author judgment: what scientific point must this paragraph establish?
+2. List the figure facts that must support that judgment.
+3. Draft 2–3 English versions with different styles: short Scripta-style, slightly explanatory APL-style, and a more complete backup version.
+4. Select sentences, not whole AI-generated paragraphs.
+5. Integrate selected sentences into the canvas only after checking claim strength, figure support, and language tone.
+6. After all paragraphs are stable, perform final polish for concision, terminology, mathematical notation, and flow.
+
+## E. Current Results-specific priorities
+
+1. The first Results paragraph should begin from the mechanical response under the same compression path, but briefly define Ref. and 90° DW.
+2. Do not use “initial near-linear regime” or “elastic-like regime” for Fig. 2 because 90° DW shows early stress oscillations.
+3. The mechanical contrast should include both stress level and stress history/shape.
+4. The averaged Py and |Py| paragraph should not present these quantities as failed metrics. They show polarization participation, but do not account for the full stress history.
+5. Fig. 3 should not be overclaimed as the full mechanism. It provides spatial evidence that local Py evolves through different pathways.
+6. Do not describe Ref. as forming alternating Py regions unless the final figure clearly supports that wording. Prefer progressive weakening and nonuniform redistribution of local Py.
+7. m_y should remain in the main Results as a normalized polarization-strength measure and a scalar compression of the local Py pathway.
+8. Fig. 4b should be written as the quantitative core: the reduced relation accounts for the dominant stress trend and captures the stress separation, especially the 90° DW oscillatory response.
+9. The SI comparison should be mentioned once in the main text: the strain-only baseline and common-coefficient relation clarify why the polarization term is needed and how far the relation can be simplified.
+10. The final Results sentence should end on mechanism, not caution: the mechanical contrast originates from different polarization-redistribution pathways selected by the initial domain structure.
+
+## F. Role of different models in the workflow
+
+1. Use GPT-5.5 Thinking for diagnosis, claim control, evidence boundaries, Chinese-to-English scientific judgment conversion, line-by-line critique, and canvas integration.
+2. Use GPT-5.5 Pro as a candidate-sentence generator, not as the final author. Give it the figure facts, author judgments, forbidden phrases, and target style, then ask for several alternative paragraph versions.
+3. Use Deep Research for literature support, journal-style benchmarking, and finding real phrasing patterns in related papers. Do not use Deep Research to directly write the Results.
+4. The author must choose the scientific emphasis and final tone. The models provide options, checks, and refinements; they should not decide the manuscript’s voice.
